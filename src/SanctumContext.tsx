@@ -10,7 +10,11 @@ export interface ContextProps {
   ) => Promise<{ twoFactor: boolean; signedIn: boolean }>;
   signOut: () => Promise<void>;
   twoFactorChallenge: (code: string, recovery?: boolean) => Promise<{}>;
-  setUser: (user: object, authenticated?: boolean) => void;
+  setUser: (
+    user: object,
+    authenticated?: boolean,
+    needVerification?: boolean
+  ) => void;
   checkAuthentication: () => Promise<boolean>;
 }
 
