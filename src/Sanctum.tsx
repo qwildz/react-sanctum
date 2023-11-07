@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useMemo } from "react";
 import axios, { AxiosInstance } from "axios";
+import React, { useEffect, useMemo, useState } from "react";
 import SanctumContext from "./SanctumContext";
 
 axios.defaults.withCredentials = true;
@@ -132,7 +132,7 @@ const Sanctum: React.FC<Props> = ({ checkOnInit = true, config, children }) => {
 
   const revalidate = (): Promise<boolean | { user: {} }> => {
     const { apiUrl, userObjectRoute } = config;
-    
+
     return new Promise(async (resolve, reject) => {
       try {
         const { data } = await localAxiosInstance.get(
@@ -151,6 +151,9 @@ const Sanctum: React.FC<Props> = ({ checkOnInit = true, config, children }) => {
             // If there's a 401 error the user is not signed in.
             setSanctumState({ user: null, authenticated: false });
             return resolve(false);
+          } else if (error.response && error.response.status === 409) {
+            // If there's a 409 error the user is signed in but their email is not verified.
+            return reject(error);
           } else {
             // If there's any other error, something has gone wrong.
             return reject(error);
@@ -175,6 +178,9 @@ const Sanctum: React.FC<Props> = ({ checkOnInit = true, config, children }) => {
               // If there's a 401 error the user is not signed in.
               setSanctumState({ user: null, authenticated: false });
               return resolve(false);
+            } else if (error.response && error.response.status === 409) {
+              // If there's a 409 error the user is signed in but their email is not verified.
+              return reject(error);
             } else {
               // If there's any other error, something has gone wrong.
               return reject(error);
