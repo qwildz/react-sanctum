@@ -10,7 +10,8 @@
     "build": "rollup -c",
     "watch": "rollup -c -w",
     "test": "cypress run",
-    "test-and-record": "cypress run --record"
+    "test-and-record": "cypress run --record",
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
