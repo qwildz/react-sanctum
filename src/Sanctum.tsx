@@ -30,8 +30,8 @@ const Sanctum: React.FC<Props> = ({ checkOnInit = true, config, children }) => {
   const [sanctumState, setSanctumState] = useState<{
     user: null | {};
     authenticated: null | boolean;
-    verified: boolean;
-  }>({ user: null, authenticated: null, verified: false });
+    needVerification: boolean;
+  }>({ user: null, authenticated: null, needVerification: false });
   const user = sanctumState.user;
   const authenticated = sanctumState.authenticated;
 
@@ -119,7 +119,11 @@ const Sanctum: React.FC<Props> = ({ checkOnInit = true, config, children }) => {
       try {
         await localAxiosInstance.post(`${apiUrl}/${signOutRoute}`);
         // Only sign out after the server has successfully responded.
-        setSanctumState({ user: null, authenticated: false, verified: false });
+        setSanctumState({
+          user: null,
+          authenticated: false,
+          needVerification: false,
+        });
         resolve();
       } catch (error) {
         return reject(error);
@@ -130,9 +134,9 @@ const Sanctum: React.FC<Props> = ({ checkOnInit = true, config, children }) => {
   const setUser = (
     user: object,
     authenticated: boolean = true,
-    verified: boolean = true
+    needVerification: boolean = false
   ) => {
-    setSanctumState({ user, authenticated, verified });
+    setSanctumState({ user, authenticated, needVerification });
   };
 
   const revalidate = (): Promise<boolean | { user: {} }> => {
@@ -157,15 +161,15 @@ const Sanctum: React.FC<Props> = ({ checkOnInit = true, config, children }) => {
             setSanctumState({
               user: null,
               authenticated: false,
-              verified: false,
+              needVerification: false,
             });
             return resolve(false);
           } else if (error.response && error.response.status === 409) {
             // If there's a 409 error the user is signed in but their email is not verified.
             setSanctumState({
               user: null,
-              authenticated: true,
-              verified: false,
+              authenticated: false,
+              needVerification: true,
             });
             return resolve(true);
           } else {
@@ -193,15 +197,15 @@ const Sanctum: React.FC<Props> = ({ checkOnInit = true, config, children }) => {
               setSanctumState({
                 user: null,
                 authenticated: false,
-                verified: false,
+                needVerification: false,
               });
               return resolve(false);
             } else if (error.response && error.response.status === 409) {
               // If there's a 409 error the user is signed in but their email is not verified.
               setSanctumState({
                 user: null,
-                authenticated: true,
-                verified: false,
+                authenticated: false,
+                needVerification: true,
               });
               return resolve(true);
             } else {
