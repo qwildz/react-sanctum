@@ -171,7 +171,7 @@ const Sanctum: React.FC<Props> = ({ checkOnInit = true, config, children }) => {
               authenticated: false,
               needVerification: true,
             });
-            return resolve(true);
+            return reject({ needVerification: true });
           } else {
             // If there's any other error, something has gone wrong.
             return reject(error);
@@ -207,7 +207,7 @@ const Sanctum: React.FC<Props> = ({ checkOnInit = true, config, children }) => {
                 authenticated: false,
                 needVerification: true,
               });
-              return resolve(true);
+              return reject({ needVerification: true });
             } else {
               // If there's any other error, something has gone wrong.
               return reject(error);
