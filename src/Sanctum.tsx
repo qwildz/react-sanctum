@@ -153,6 +153,7 @@ const Sanctum: React.FC<Props> = ({ checkOnInit = true, config, children }) => {
             return resolve(false);
           } else if (error.response && error.response.status === 409) {
             // If there's a 409 error the user is signed in but their email is not verified.
+            setSanctumState({ user: null, authenticated: false });
             return reject(error);
           } else {
             // If there's any other error, something has gone wrong.
@@ -180,6 +181,7 @@ const Sanctum: React.FC<Props> = ({ checkOnInit = true, config, children }) => {
               return resolve(false);
             } else if (error.response && error.response.status === 409) {
               // If there's a 409 error the user is signed in but their email is not verified.
+              setSanctumState({ user: null, authenticated: false });
               return reject(error);
             } else {
               // If there's any other error, something has gone wrong.
